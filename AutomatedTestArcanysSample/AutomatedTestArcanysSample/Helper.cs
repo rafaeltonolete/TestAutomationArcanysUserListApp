@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
+using System;
+using System.IO;
+using System.Net;
+
 
 namespace AutomatedTestArcanysSample.HelperClass
 {
@@ -49,9 +49,44 @@ namespace AutomatedTestArcanysSample.HelperClass
             return (new string(str));
         }
 
+        public static bool WaitUntilElementIsPresent(IWebDriver driver, By by, int timeout = 5)
+        {
+            for (var i = 0; i < timeout; i++)
+            {
+                if (driver.FindElement(by).Displayed) return true;
+            }
+            return false;
+        }
 
+        public string GETrequest(string url)
+        {
+            try
+            {
+                string rt;
 
+                WebRequest request = WebRequest.Create(url);
 
+                WebResponse response = request.GetResponse();
+
+                Stream dataStream = response.GetResponseStream();
+
+                StreamReader reader = new StreamReader(dataStream);
+
+                rt = reader.ReadToEnd();
+
+                Console.WriteLine(rt);
+
+                reader.Close();
+                response.Close();
+
+                return rt;
+            }
+
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
 
     }
 }
