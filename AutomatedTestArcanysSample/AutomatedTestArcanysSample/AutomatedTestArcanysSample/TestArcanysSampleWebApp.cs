@@ -4,10 +4,9 @@ using OpenQA.Selenium.Chrome;
 using NUnit.Framework;
 using System.Threading;
 using AutomatedTestArcanysSample.HelperClass;
-using RestSharp;
-using Octokit.Internal;
 using System.Net;
 using System.IO;
+using RestSharp;
 
 namespace AutomatedTestArcanysSample
 {
@@ -29,7 +28,7 @@ namespace AutomatedTestArcanysSample
         
 
         [Test]
-        public void SignUpUser()
+        public void TC0001_SignUpUser()
         {
 
             driver.Navigate().GoToUrl("http://54.251.184.170:3030/");
@@ -82,6 +81,40 @@ namespace AutomatedTestArcanysSample
             Assert.IsTrue(response.Contains(passWrd));
 
 
+
+          
+
+        }
+
+
+        [Test]
+        public void TC0002_DeleteUsers()
+        {
+            var client = new RestClient("http://54.251.184.170:3030/api/users");
+
+            var request = new RestRequest(Method.DELETE);
+            IRestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
+
+
+            driver.Navigate().GoToUrl("http://54.251.184.170:3030/");
+
+            Thread.Sleep(10000);
+
+
+            driver.FindElement(By.XPath(".//button[contains(text(),'All Users')]")).Click();
+
+            Thread.Sleep(20000);
+            Helper.WaitUntilElementIsPresent(driver, By.XPath("//input[@value='New User']"), 10);
+
+            //tr/td
+
+            string getresponse = GETrequest("http://54.251.184.170:3030/api/users");
+
+            Assert.IsFalse(getresponse.Contains("name"));
+
+
+
         }
 
 
@@ -120,9 +153,6 @@ namespace AutomatedTestArcanysSample
                 return "Error: " + ex.Message;
             }
         }
-
-
-
 
 
 
